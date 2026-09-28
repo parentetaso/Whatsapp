@@ -1,13 +1,13 @@
 "use client"
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import ChatList from "../components/ChatList"
 import Input from "../components/Input"
 import Boton from '../components/Boton';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
-export default function chatsPage() {
+function ChatsPageInterno() {
     const searchParams = useSearchParams();
     const id_user = searchParams.get("id_user")
     const correo_user = searchParams.get("correo")
@@ -103,6 +103,7 @@ export default function chatsPage() {
 
     return (
         <>
+            <h2 style={{ textAlign: "center", margin: "20px 0" }}>Mis chats</h2>
             <ChatList chats={chats} id_user={id_user}></ChatList>
 
             <Boton funcion={() => setMostrarPopup(true)} text="Crear"></Boton>  
@@ -116,7 +117,9 @@ export default function chatsPage() {
                 <Input tipo="text" funcion={setDescripcion} text="Descripcion"></Input>          
                 <Input tipo="text" funcion={setImagen} text="Foto"></Input>          
 
-                <img src={imagen}></img>
+                {typeof imagen === "string" && imagen.trim() !== "" && (
+                    <img className="preview" src={imagen} alt="Vista previa del chat"></img>
+                )}
                 <div>
 
                     <h3>Integrantas:</h3>
@@ -132,5 +135,13 @@ export default function chatsPage() {
                 <Boton funcion={crearChat} text="Crear"></Boton>  
             </Popup>
         </>
+    );
+}
+
+export default function chatsPageWrapped() {
+    return (
+        <Suspense fallback={<p style={{ textAlign: "center", marginTop: "24px" }}>Cargando...</p>}>
+            <ChatsPageInterno />
+        </Suspense>
     );
 }

@@ -1,6 +1,6 @@
 "use client"
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useSocket } from "../hooks/useSocket";
 
 
@@ -9,7 +9,7 @@ import Input from "../components/Input"
 import Boton from '../components/Boton';
 
 
-export default function chatPage() {
+function ChatPageInterno() {
     const searchParams = useSearchParams();
     const id_user = searchParams.get("id_user")
     const id_chat = searchParams.get("id_chat")
@@ -26,6 +26,7 @@ export default function chatPage() {
     const [mensaje, setMensaje] = useState("");
     const [mensajes, setMensajes] = useState([]);
     const [usuario, setUsuario] = useState({});
+    const finRef = useRef(null);
 
 
 
@@ -171,18 +172,45 @@ export default function chatPage() {
     }
 
 
+    // Auto-scroll al ultimo mensaje
+    useEffect(() => {
+        if (finRef.current) {
+            finRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+    }, [mensajes]);
+
+    // Enviar con la tecla Enter y limpiar el campo
+    function manejarTecla(event) {
+        if (event.key === "Enter" && mensaje.trim() !== "") {
+            enviar()
+            setMensaje("")
+        }
+    }
+
+
     return (
         <>
 
-            <div>
+            <div className="mensajes">
                 {renderizarMsg()}
+                <div ref={finRef}></div>
 
             </div>
             
-            <Input tipo="text" funcion={setMensaje} text="Mensaje"></Input>          
-            <Boton funcion={enviar} text="Enviar"></Boton>  
-        
+            <div className="barraEntrada">
+                <Input tipo="text" funcion={setMensaje} text="Mensaje" teclado={manejarTecla} valor={mensaje}></Input>          
+                <Boton funcion={enviar} text="Enviar"></Boton>  
+            </div>
  
+        
         </>
+    );
+}
+
+export default function chatPageWrapped() {
+    return (
+        <Suspense fallback={<p style={{ textAlign: "center", marginTop: "24px" }}>Cargando...</p>}>
+            <ChatPageInterno />
+        </Suspense>
     );
 }

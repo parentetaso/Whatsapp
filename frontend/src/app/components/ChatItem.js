@@ -15,11 +15,13 @@ export default function ChatItem({nombre, foto, descripcion, id_chat, id_user, g
     }
 
 
+    const fotoValida = typeof foto === "string" && foto.trim() !== "";
+
     return(
-        <button onClick={irAlChat}>
-            <img src={foto}></img>
+        <button onClick={irAlChat} className="chat">
+            {fotoValida && <img src={foto} alt={`imagen de ${nombre ?? ""}`} />}
             
-            <div>
+            <div className="chatPre">
                 <h3>{nombre}</h3>
                 
                 <p>{descripcion}</p>
