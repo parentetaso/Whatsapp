@@ -1,0 +1,19 @@
+* {
+  background-color: rgb(206, 228, 181);
+  margin:0;
+}
+header{
+  background-color: rgb(200, 240, 155);
+}
+.chat{
+  margin-bottom: 10px;
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+}
+.chatPre{
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  padding-left: 15px;
+}
