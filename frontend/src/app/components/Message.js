@@ -6,20 +6,22 @@ export default function Message({contenido, foto, usuario, id_user, id_user_Loge
 
 
 
+    const fotoValida = typeof foto === "string" && foto.trim() !== "";
+
     return(
         <>
             
             {id_user==id_user_Logeado?
                 <div className="enviado">
-                    <img src={foto}></img>
+                    {fotoValida && <img src={foto} alt={`avatar de ${usuario ?? ""}`} />}
 
-                    <p>{usuario}: {contenido}</p>
+                    <p><strong>{usuario ? `${usuario}: ` : ""}</strong>{contenido}</p>
                 </div> 
                 :
-                <div className="recivido">
-                    <img src={foto}></img>
+                <div className="recibido">
+                    {fotoValida && <img src={foto} alt={`avatar de ${usuario ?? ""}`} />}
 
-                    <p>{usuario}: {contenido}</p>
+                    <p><strong>{usuario ? `${usuario}: ` : ""}</strong>{contenido}</p>
                 </div>
         
             }
